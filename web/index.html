@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unique Image Finder</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="style.css">
+  <script src="/eel.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Unique Image Finder</h1>
+    <div class="spacer"></div>
+    <button class="btn" id="cache-btn" title="Manage the hash cache">Cache</button>
+    <button class="btn icon" id="theme-btn" title="Toggle light / dark">☀️</button>
+  </header>
+
+  <main>
+    <section class="panel controls">
+      <div class="row">
+        <label for="ref-dir">Reference <small>(not for delete)</small></label>
+        <input type="text" id="ref-dir" placeholder="Absolute folder path" spellcheck="false">
+        <button class="btn" id="ref-browse">Browse…</button>
+      </div>
+      <div class="row">
+        <label for="work-dir">Working</label>
+        <input type="text" id="work-dir" placeholder="Absolute folder path" spellcheck="false">
+        <button class="btn" id="work-browse">Browse…</button>
+      </div>
+
+      <div class="row options">
+        <details class="dropdown" id="fields-dd">
+          <summary class="btn">Compare fields ▾</summary>
+          <div class="dropdown-body" id="fields-list"></div>
+        </details>
+        <label class="check"><input type="checkbox" id="use-hash"> By hash (dHash, <span id="hash-size">16</span>×<span id="hash-size2">16</span>)</label>
+        <button class="btn icon" id="hash-info-btn" title="About hashing and the cache">ℹ</button>
+        <label class="check" for="similarity">Similarity</label>
+        <input type="range" id="similarity" min="50" max="100" value="90">
+        <span id="sim-label" class="sim-label"></span>
+        <div class="spacer"></div>
+        <button class="btn primary" id="search-btn">Search</button>
+        <button class="btn danger" id="cancel-btn" hidden>Cancel</button>
+      </div>
+
+      <div class="progress-wrap" id="progress-wrap" hidden>
+        <progress id="progress" max="100" value="0"></progress>
+        <span id="progress-msg"></span>
+      </div>
+      <div id="notices"></div>
+    </section>
+
+    <nav class="tabs" id="tabs" role="tablist"></nav>
+
+    <section class="panel results">
+      <div class="tab-toolbar">
+        <label class="check"><input type="checkbox" id="select-all"> <span id="select-all-label">Select all</span></label>
+        <span class="hint" id="tab-hint"></span>
+      </div>
+      <div id="list" class="list"></div>
+      <div class="more"><button class="btn" id="more-btn" hidden>Load more</button></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <button class="btn danger" id="delete-dups-btn" title="Move every duplicate in the Working folder to the Trash">Delete duplicates from Working</button>
+    <button class="btn success" id="keep-btn" title="Hide the duplicate list; nothing is deleted">Keep</button>
+    <button class="btn success" id="save-uniques-btn">Save uniques from both folders</button>
+    <button class="btn" id="move-btn">Move selected</button>
+    <button class="btn danger" id="delete-btn">Delete selected</button>
+    <div class="spacer"></div>
+    <span id="selected-count">Selected: 0</span>
+  </footer>
+
+  <div id="modal-root"></div>
+  <div id="toasts"></div>
+  <script src="app.js"></script>
+</body>
+</html>
