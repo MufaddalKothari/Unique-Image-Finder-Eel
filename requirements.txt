@@ -3,7 +3,8 @@ Pillow>=10.0
 ImageHash>=4.3
 numpy>=1.24
 Send2Trash>=1.8
+pyinstaller
+pillow-heif
 # optional: HEIC/HEIF support
-# pillow-heif
 # dev
 # pytest

@@ -261,3 +261,22 @@ def test_known_path_gate(tmp_path, monkeypatch):
     assert not api._is_known("/etc/passwd")
     api.DB.upsert_many([("/x/y.jpg", ALGO, 16, 1, 1, 1, 1, "RGB", b"\0" * 32, None)])
     assert api._is_known("/x/y.jpg")
+
+
+def test_work_select_all_never_includes_reference_files(tmp_path):
+    base = str(tmp_path / "ov")
+    make_img(f"{base}/a.jpg", 1)
+    shutil.copy(f"{base}/a.jpg", f"{base}/sub/x.jpg") if os.makedirs(f"{base}/sub") is None else None
+    shutil.copy(f"{base}/a.jpg", f"{base}/sub/y.jpg")
+    db = HashDB(str(tmp_path / "o.db"))
+    job = Job("search", base, f"{base}/sub", {"hash": True, "similarity": 90, "hash_size": 16, "fields": []})
+    job.start(db); job.thread.join(20)
+    refs = {d["ref"]["path"] for d in job.tabs["duplicates"]}
+    work = job.paths("duplicates", "work")
+    assert not (set(work) & refs)
+    # disjoint folders are unaffected
+    ref2, work2 = str(tmp_path / "r2"), str(tmp_path / "w2")
+    make_img(f"{ref2}/a.jpg", 1); os.makedirs(work2); shutil.copy(f"{ref2}/a.jpg", f"{work2}/a2.jpg")
+    j2 = Job("search", ref2, work2, {"hash": True, "similarity": 90, "hash_size": 16, "fields": []})
+    j2.start(db); j2.thread.join(20)
+    assert j2.paths("duplicates", "work") == [f"{work2}/a2.jpg"]

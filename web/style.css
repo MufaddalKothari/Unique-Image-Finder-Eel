@@ -76,6 +76,7 @@ progress { width: 260px; height: 12px; accent-color: var(--accent); }
 .card .side { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
 .card .col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .col .tag { font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.list > * { flex: none; }   /* never let a flex column squash cards/groups */
 .group { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
 .group-head { padding: 6px 12px; background: var(--hover); font-weight: 600; font-size: 12.5px; }
 .group .card { border: 0; border-top: 1px solid var(--border); border-radius: 0; }

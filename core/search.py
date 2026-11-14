@@ -111,7 +111,7 @@ class Job:
         crit = self.criteria
         ref, work = abs_path(self.ref), abs_path(self.work)
         if ref == work or is_within(ref, work) or is_within(work, ref):
-            self.warnings.append("The two folders are the same or overlap; a file is never reported as a duplicate of itself.")
+            self.warnings.append("The two folders overlap. A file is never matched with itself, and “Select all Working copies” / “Delete duplicates from Working” skip any file that is also a Reference file, so you can’t delete every copy of an image.")
 
         self._set(1, "Scanning reference folder…")
         ref_files = scan_directory(ref, self.cancel, on_count=lambda n: self._set(1 + min(4, n / 5000), f"Scanning reference… {n} images"))
@@ -163,8 +163,14 @@ class Job:
 
         with self._lock:
             items = list(self.tabs[tab])
+        # Overlapping folders: a file can be a Working copy in one pair and the Reference in another.
+        # "Working copies" must never include a file that also acts as a Reference, otherwise bulk
+        # delete could remove every copy of an image.
+        ref_paths = {it["ref"]["path"] for it in items} if tab == "duplicates" and which == "work" else set()
         for it in items:
             if tab == "duplicates":
+                if which == "work" and it["work"]["path"] in ref_paths:
+                    continue
                 if which in ("ref", "both"):
                     add(it["ref"]["path"])
                 if which in ("work", "both"):
