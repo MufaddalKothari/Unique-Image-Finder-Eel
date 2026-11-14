@@ -6,6 +6,6 @@ unq_img/
 *.db-shm
 .pytest_cache/
 uife/
-dist/
+dist/main
 build/
 main.spec
